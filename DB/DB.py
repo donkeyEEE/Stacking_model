@@ -18,7 +18,7 @@ class db:
         return df
 
     def get_data(self):
-        self.fp = "E:\学习\文献库\pythonProject\DataBase\DB.csv"
+        self.fp = "pythonProject\DataBase\DB.csv"
         self.data = self.read_data(self.fp)
 
     def search(self, x):
