@@ -478,14 +478,14 @@ class ensemble_models:
         for i in range(3):
             test_NNLS += coefficients[i] * np.array(Xt.iloc[0:, i])
         self.L3_test_df = pd.DataFrame({'true': np.array(yt).reshape(-1),
-                                        'test_pre': test_NNLS})
+                                        'pre': test_NNLS})
 
         # 训练集
         train_NNLS = 0
         for i in range(3):
             train_NNLS += coefficients[i] * np.array(X.iloc[0:, i])
         self.L3_train_df = pd.DataFrame({'true': np.array(y).reshape(-1),
-                                         'train_pre': train_NNLS})
+                                         'pre': train_NNLS})
 
         if Args.plot:
             plot_parity(yt, test_NNLS, 'L3_test')
