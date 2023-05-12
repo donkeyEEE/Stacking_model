@@ -21,24 +21,7 @@ class Args:
                  MLR=False, RF2=False, SVR2=False,
                  plot=False, AD_FP=False,
                  S_C=[0.8, 0.4]):
-        """
-        :param train:
-        :param test:
-        :param predict_df:
-        :param AFP:
-        :param RF:
-        :param MPNN:
-        :param SVR:
-        :param GAT:
-        :param save_r:
-        :param DNN:
-        :param MLR:
-        :param RF2:
-        :param SVR2:
-        :param plot:
-        :param AD_FP:
-        :param S_C:
-        """
+
         # 储存训练集和测试集
         # 以及位置化合物数据集
         self.train = train

@@ -43,8 +43,8 @@ class ensemble_models:
         self.L3_predict_array = None
 
         # 第三层NNLS的权重
-        self.lis_coef = None
-        self.lis_res = None
+        self.lis_coef = np.array([0.2, 0.5, 0.3])
+        self.lis_res = 0.232
 
     def Lay1_models_train(self, Args, save=False):
         """
