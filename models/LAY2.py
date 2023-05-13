@@ -281,7 +281,7 @@ class ensemble_models:
                                          batch_size=16, learning_rate=0.001,
                                          )
             model_AFP.restore(model_dir='tmp/AFP')
-            pre_AFP = model_AFP.predict(dataloader_PytorchModel(predict_df))
+            pre_AFP = model_AFP.predict(dataloader_PytorchModel(predict_df, featurizer = dc.feat.MolGraphConvFeaturizer(use_edges=True)))
             dic['AFP'] = np.array(pre_AFP).reshape(-1)
         if RF:
             print('RF predict')
@@ -289,14 +289,14 @@ class ensemble_models:
                                               model_dir='tmp/RF')
 
             model_RF.reload()
-            pre_RF = model_RF.predict(dataloader_RF_SVR(predict_df))
+            pre_RF = model_RF.predict(dataloader_RF_SVR(predict_df, ECFP_Params=[4096,2]))
             dic['RF'] = np.array(pre_RF).reshape(-1)
         if SVR:
             print('SVR predict')
             model_SVR = dc.models.SklearnModel(svm.SVR(C=1),
                                                model_dir='tmp/SVR')
             model_SVR.reload()
-            pre_SVR = model_SVR.predict(dataloader_RF_SVR(predict_df))
+            pre_SVR = model_SVR.predict(dataloader_RF_SVR(predict_df, ECFP_Params=[4096, 2]))
             dic['SVR'] = np.array(pre_SVR).reshape(-1)
         if MPNN:
             print('MPNN predict')
