@@ -281,7 +281,8 @@ class ensemble_models:
                                          batch_size=16, learning_rate=0.001,
                                          )
             model_AFP.restore(model_dir='tmp/AFP')
-            pre_AFP = model_AFP.predict(dataloader_PytorchModel(predict_df, featurizer = dc.feat.MolGraphConvFeaturizer(use_edges=True)))
+            pre_AFP = model_AFP.predict(dataloader_PytorchModel(predict_df,
+                                                                featurizer = dc.feat.MolGraphConvFeaturizer(use_edges=True)))
             dic['AFP'] = np.array(pre_AFP).reshape(-1)
         if RF:
             print('RF predict')

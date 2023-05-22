@@ -9,11 +9,12 @@ import pandas as pd
 from sklearn import svm
 import pickle
 from deepchem.models.torch_models import AttentiveFPModel, MATModel, GATModel
-from utils import plot_parity, run_fun_SVR, run_fun_RF, run_fun_AFP_MAT, dataloader_RF_SVR, dataloader_PytorchModel, \
+from models.utils import plot_parity, run_fun_SVR, run_fun_RF, run_fun_AFP_MAT,run_fun_DNN, dataloader_RF_SVR, dataloader_PytorchModel, \
     ADFP_AC
 from sklearn.linear_model import LinearRegression
 from scipy.optimize import nnls
 import torch
+import os
 
 class ensemble_models:
     def __init__(self):
@@ -76,6 +77,20 @@ class ensemble_models:
 
         # 输入数据
         print('size of train is{} ,test is {}'.format(train.shape, test.shape))
+        
+        # 创建保存数据以及模型的文件夹
+
+        path = os.getcwd()+ '\\tmp'
+        path_MPNN = os.getcwd()+ '\\tmp\\MPNN'
+        if os.path.exists(path) ==False:
+            os.mkdir(path)
+        if os.path.exists(path + 'L2') ==False:
+            os.mkdir(path + 'L2')
+        if os.path.exists(path + 'L3') ==False:
+            os.mkdir(path + 'L3')
+        if os.path.exists(path_MPNN) ==False:
+            os.mkdir(path_MPNN)
+        
         # AFP模型
         # 定义模型
         if AFP:
@@ -178,7 +193,6 @@ class ensemble_models:
             )
             DNN_model = dc.models.TorchModel(DNN_model, loss=dc.models.losses.L2Loss())
             # 训练
-            from utils import run_fun_DNN
             if Args.ECFP_Params is not None:
                 # print(Args.ECFP_Params)
                 recorder_DNN, model_DNN = run_fun_DNN(DNN_model, train_dataset=train, test_dataset=test,
@@ -188,9 +202,6 @@ class ensemble_models:
 
             if plot:
                 plot_parity(np.array(test.LogLD).reshape(-1), recorder_DNN[0]['test_pre'].reshape(-1), 'DNN')
-
-            if save:
-                model_DNN.save()
             self.recorder_DNN = recorder_DNN
             dic_train['DNN'] = recorder_DNN[0]['train_pres'].reshape(-1)
             dic_test['DNN'] = recorder_DNN[0]['test_pre'].reshape(-1)
@@ -200,7 +211,7 @@ class ensemble_models:
         if RF:
             print('start training RF ')
             model_RF = dc.models.SklearnModel(RandomForestRegressor(n_estimators=181, min_samples_split=14),
-                                              model_dir='E:\学习\文献库\pythonProject\models/tmp/RF')
+                                              model_dir='tmp/RF')
 
             if Args.ECFP_Params is not None:
                 # print(Args.ECFP_Params)
@@ -222,7 +233,7 @@ class ensemble_models:
         if SVR:
             print('start training SVR ')
             model_SVR = dc.models.SklearnModel(svm.SVR(C=1),
-                                               model_dir='E:\学习\文献库\pythonProject\models/tmp/SVR')
+                                               model_dir='/tmp/SVR')
             # 添加修改描述符参数的功能
             if Args.ECFP_Params is not None:
                 recorder_SVR, model_SVR = run_fun_RF(model_SVR, train_dataset=train, test_dataset=test,
