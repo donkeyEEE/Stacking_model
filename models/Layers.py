@@ -56,13 +56,14 @@ class ensemble_models:
         train = Args.train
         test = Args.test
         [AFP, RF, MPNN, SVR] = Args.model_lis
+        GAT = Args.GAT
         save_r = Args.save_r
         plot = Args.plot
         AD_FP = Args.AD_FP
         S_C = Args.S_C
 
         # 除杂
-        l = ['C', '[C]', '[Na+].[Br-]', '[S]']
+        l = ['C', '[C]', '[Na+].[Br-]', '[S]', '[Cd]' , '[Co]']
         train = train[~train['smiles'].isin(l)]
         test = test[~test['smiles'].isin(l)]
         Args.train = train
@@ -91,8 +92,9 @@ class ensemble_models:
         if os.path.exists(path_MPNN) ==False:
             os.mkdir(path_MPNN)
         
-        # AFP模型
+       
         # 定义模型
+        # AFP模型 停用--523
         if AFP:
             print('start training AFP ')
             model_AFP = AttentiveFPModel(mode='regression', n_tasks=1,
@@ -109,8 +111,7 @@ class ensemble_models:
             dic_train['AFP'] = recorder_AFP[0]['train_pres'].reshape(-1)
             dic_test['AFP'] = recorder_AFP[0]['test_pre'].reshape(-1)
             print('============AFP over============')
-        # MATModel
-        GAT = Args.GAT
+        # GATModel
         if GAT:
             print('start training GAT ')
             """
@@ -132,6 +133,29 @@ class ensemble_models:
             dic_train['GAT'] = recorder_MAT[0]['train_pres'].reshape(-1)
             dic_test['GAT'] = recorder_MAT[0]['test_pre'].reshape(-1)
             print('============GAT over============')
+        
+        # GCN
+        GCN = Args.GCN
+        from deepchem.models import GCNModel
+        if GCN:
+            print('start training GCN ')
+            # 超参数有待考量！！！
+            model_AFP = GCNModel(mode='regression', n_tasks=1,
+                                         batch_size=32, learning_rate=0.001
+                                         )
+            # GAT和GCN特征转化器相同，可以使用同一个接口
+            recorder_GCN, model_GCN = run_fun_AFP_MAT(model_GCN ,mode_class = "GAT" ,train_dataset=train, test_dataset=test, epoch=40)
+            if plot:
+                plot_parity(recorder_GCN[0]['test_true'].reshape(-1), recorder_GCN[0]['test_pre'].reshape(-1), 'GCN')
+
+            if save:
+                model_GCN.save_checkpoint(model_dir='tmp/GCN')
+            self.recorder_GCN = recorder_GCN
+            dic_train['GCN'] = recorder_GCN[0]['train_pres'].reshape(-1)
+            dic_test['GCN'] = recorder_GCN[0]['test_pre'].reshape(-1)
+            print('============GCN over============')
+        
+        
         # MPNN
         if MPNN:
             print('start training MPNN ')
@@ -146,7 +170,7 @@ class ensemble_models:
                 '--save_dir', 'tmp/MPNN/test_checkpoints_reg',
                 '--epochs', '25',  #
                 '--num_folds', '1',
-                '--ffn_num_layers', '3',
+                '--ffn_num_layers', '2',
             ]
 
             args = chemprop.args.TrainArgs().parse_args(arguments)
@@ -262,10 +286,15 @@ class ensemble_models:
             l = ['C', '[C]', '[Na+].[Br-]', '[S]']
             df_test_sal = df_test_sal[~df_test_sal['smiles'].isin(l)]
             is_SALs = df_test_sal.is_SALs
+            self.df_test_sal = df_test_sal
+            self.is_SALs = is_SALs
+            
             if save:
-                file = open('tmp/ADFP/ADer.pickle', 'wb')
-                pickle.dump(ADer, file)
-                file.close()
+                if os.path.exists(path+'\\ADFP') ==False:
+                    os.mkdir(path+'\\ADFP')
+                #file = open('tmp/ADFP/ADer.pickle', 'wb')
+                #pickle.dump(ADer, file)
+                #file.close()
 
         df_train = pd.DataFrame(dic_train)
         df_test = pd.DataFrame(dic_test)

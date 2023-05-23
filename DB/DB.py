@@ -11,7 +11,7 @@ class db:
 
     @staticmethod
     def read_data(file_path):
-        df = pd.read_csv(file_path, index_col=0, dtype={2: float}).reset_index(drop=True)
+        df = pd.read_csv(file_path, index_col=0, dtype={'LogLD': float}).reset_index(drop=True)
         # df = df.groupby(['smiles']).mean().reset_index()
         df = df.reindex(columns=['CASRN', 'LogLD', 'smiles'])
         print('data already finished size ={}'.format(df.shape[0]))

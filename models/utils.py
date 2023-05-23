@@ -389,14 +389,15 @@ def dataloader_AFP_default(df):
 
 def dataloader_PytorchModel(df, featurizer):
     """
-    数据加载器，输入df，并将其smiles转换格式，返回dc.dataset
+    用于GAT和AFP的数据加载器，因为都是pytorch模型，故命名为dataloader_PytorchModel
+    输入df，并将其smiles转换格式，返回dc.dataset
     :param df: 含有smiles和LogLD列的df
     :param featurizer : 和模型对应的转换器
     :return:返回NumpyDataset，用于dc类模型训练
     """
     # featurizer = dc.feat.MolGraphConvFeaturizer(use_edges=True)
     smiles_l = list(df.smiles)
-    x = featurizer.featurize(smiles_l)
+    x = featurizer.featurize(smiles_l)    
     y_data = df.LogLD
     dataset = dc.data.NumpyDataset(X=x, y=y_data)
     return dataset

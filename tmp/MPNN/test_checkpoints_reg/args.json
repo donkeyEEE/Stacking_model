@@ -89,8 +89,8 @@
     "reaction_mode": "reac_diff",
     "reaction_solvent": false,
     "reproducibility": {
-        "command_line": "python 'C:\\Users\\donkey\\.conda\\envs\\Miku\\lib\\site-packages\\ipykernel_launcher.py' -f 'C:\\Users\\donkey\\AppData\\Roaming\\jupyter\\runtime\\kernel-d3f455c2-df82-4d56-a4ac-001c94ff42e3.json'",
-        "time": "Mon May 22 16:21:49 2023"
+        "command_line": "python 'C:\\Users\\donkey\\.conda\\envs\\Miku\\lib\\site-packages\\ipykernel_launcher.py' -f 'C:\\Users\\donkey\\AppData\\Roaming\\jupyter\\runtime\\kernel-ed014e3f-b0b8-4765-a4dc-efd07aacefad.json'",
+        "time": "Mon May 22 23:16:57 2023"
     },
     "resume_experiment": false,
     "save_dir": "tmp/MPNN/test_checkpoints_reg",

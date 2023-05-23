@@ -61,7 +61,7 @@ class ensemble_models:
         S_C = Args.S_C
 
         # 除杂
-        l = ['C', '[C]', '[Na+].[Br-]', '[S]']
+        l = ['C', '[C]', '[Na+].[Br-]', '[S]', '[Cd]' , '[Co]']
         train = train[~train['smiles'].isin(l)]
         test = test[~test['smiles'].isin(l)]
         Args.train = train
